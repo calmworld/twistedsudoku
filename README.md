@@ -5,3 +5,6 @@ A fun game with a spin on the classic Sudoku
 - JavaScript
 - CSS3
 - HTML5
+
+# Link to Deployed Game:
+&&& Under Construction &&&
