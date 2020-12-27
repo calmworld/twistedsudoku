@@ -1,12 +1,12 @@
 body {
-    --background: #1F204C;
-    --number-background: #5F61BB;
-    --number-shadow: #434596;
-    --symbol-background: #424392;
-    --symbol-shadow: #313378;
+    --background: #1f691c;
+    --number-background: #5fbb95;
+    --number-shadow: #439673;
+    --symbol-background: #429271;
+    --symbol-shadow: #317863;
     --text: #F6F6F6;
     --text-fade: #CCCCCC;
-    --text-green: #2ECC71;
+    --text-green: #2ecc8a;
     --text-red: #D8334A;
     --selected-background: #DDDDDD;
     --selected-shadow: #C8C8C8;
