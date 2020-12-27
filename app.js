@@ -1,218 +1,113 @@
-//Capitalised variables signify global variables. lowercase variables signify local variables 
+var Sudoku = {
 
-//How many times a number is used on the board
-var Used = [-10, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-//If Needed for doing the correct input depending on device
-var Capture = "click";
+    //-------------------------------GAME DATA---------------------------------
+    //the Sudoku game data, game can be different if the data changes
+    matrix:[  [[7],[2],[],[9],[4],[5],[],[3],[]],
+        [[],[3],[9],[2],[],[6],[],[],[4]],
+        [[1],[5],[],[7],[3],[8],[6],[9],[2]],
+        [[6],[4],[7],[1],[],[3],[],[2],[]],
+        [[9],[8],[2],[6],[5],[7],[4],[1],[3]],
+        [[3],[],[5],[4],[9],[2],[7],[],[6]],
+        [[4],[9],[3],[],[6],[1],[],[5],[7]],
+        [[5],[7],[],[3],[2],[],[8],[6],[9]],
+        [[],[],[8],[5],[7],[9],[3],[4],[]]
+    ],
 
-//Grid generation
-var NumberOrder, Symbols, Results;
+    //-----------------------------START FUNCTION-------------------------------
+    //render game board and input Sudoku numbers
+    start: function(){
 
-//Grid Pattern drawing (0: number, 1: symbol, 2:blank space, 3:result)
-const Pattern = [0, 1, 0, 1, 0, 3, 1, 2, 1, 2, 1, 2, 0, 1, 0, 1, 0, 3, 1, 2, 1, 2, 1, 2, 0, 1, 0, 1, 0, 3, 3, 2, 3, 2, 3, 2];
-
-//Grid Drawing
-var Counter = [0, 0, 0];
-
-//Store the board
-var Board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-//Checking 
-const Checking = [
-    [0, 1, 2, 0, 1],
-    [3, 4, 5, 5, 6],
-    [6, 7, 8, 10, 11],
-    [0, 3, 6, 2, 7],
-    [1, 4, 7, 3, 8],
-    [2, 5, 8, 4, 9]
-];
-
-//cell number row and column
-const CheckingPlan = [
-    [0, 3],
-    [0, 4],
-    [0, 5],
-    [1, 3],
-    [1, 4],
-    [1, 5],
-    [2, 3],
-    [2, 4],
-    [2, 5]
-];
-
-//Tracks matched answers
-var Matches = [false, false, false, false, false, false];
-
-//Touchscreen
-if (!!('ontouchstart' in window) || !!('msmaxtouchpoints' in window.navigator)) {
-    Capture = "touchend";
-}
-
-function Generate() {
-    NumberOrder = ArrayShuffle(Array.apply(null, {
-        length: 10
-    }).map(Number.call, Number).slice(1));
-    //0:+, 1:-, 2:×
-    Symbols = Array.apply(null, {
-        length: 12
-    }).map(Function.call, Math.random).map(function (x) {
-        return Math.floor(x * 3)
-    });
-    Results = [];
-    for (var i = 0; i < 3; i++) {
-        Results.push(Action(Action(NumberOrder[0 + i * 3], NumberOrder[1 + i * 3], Symbols[0 + i * 5]), NumberOrder[2 + i * 3], Symbols[1 + i * 5]));
-    }
-    for (var i = 0; i < 3; i++) {
-        Results.push(Action(Action(NumberOrder[0 + i], NumberOrder[3 + i], Symbols[2 + i]), NumberOrder[6 + i], Symbols[7 + i]));
-    }
-
-    //final solution in the console
-    for (var j = 0; j < 7; j++) {
-        var l = "";
-        for (var i = 0; i < 7; i++) {
-            if (j % 2 == 0 && j < 5) {
-                switch (i) {
-                    case 0:
-                        l += NumberOrder[0 + (j / 2) * 3];
-                        break;
-                    case 1:
-                        l += SymbolToChar(Symbols[0 + (j / 2) * 5]);
-                        break;
-                    case 2:
-                        l += NumberOrder[1 + (j / 2) * 3];
-                        break;
-                    case 3:
-                        l += SymbolToChar(Symbols[1 + (j / 2) * 5]);
-                        break;
-                    case 4:
-                        l += NumberOrder[2 + (j / 2) * 3];
-                        break;
-                    case 5:
-                        l += "=";
-                        break;
-                    case 6:
-                        l += Results[0 + (j / 2)];
-                        break;
+        //render game board
+        for (var i = 0; i < 9; i++) {
+            var row = $('<tr></tr>');
+            for(var j = 0; j < 9; j++){
+                var sBlock = $('<td class="sBox edit"></td>');
+                sBlock.attr('id','Block'+'_'+ i + '_' + j).text(Sudoku.matrix[i][j]);   //store the block location in the id
+                row.append(sBlock);
+                if(Sudoku.matrix[i][j] != ''){  //the number in block with edit class can be changed
+                    sBlock.removeClass('edit');
                 }
-            } else if (j < 5) {
-                switch (i) {
-                    case 0:
-                        l += SymbolToChar(Symbols[2 + ((j - 1) / 2) * 5]);
-                        break;
-                    case 1:
-                        l += " ";
-                        break;
-                    case 2:
-                        l += SymbolToChar(Symbols[3 + ((j - 1) / 2) * 5]);
-                        break;
-                    case 3:
-                        l += " ";
-                        break;
-                    case 4:
-                        l += SymbolToChar(Symbols[4 + ((j - 1) / 2) * 5]);
-                        break;
-                    case 5:
-                        l += " ";
-                        break;
-                    case 6:
-                        l += " ";
-                        break;
+                var groups = Math.floor(Math.sqrt(9));  //use different color to distinguish different groups
+                var gA = Math.floor(i / groups);
+                var gB = Math.floor(j / groups);
+                if (gA % 2 == gB % 2) {
+                    sBlock.addClass('sGroup');
+                }else{
+                    sBlock.addClass('sGroup2');
                 }
-            } else if (j == 5) {
-                l = "=     =     =";
-                break;
-            } else if (j == 6) {
-                l += Results[3];
-                l += Array(7 - (Results[3] + "").length).join(" ");
-                l += Results[4];
-                l += Array(7 - (Results[4] + "").length).join(" ");
-                l += Results[5];
-                break;
+            $('#sTable').append(row);
             }
-            l += "  ";
         }
-        console.log(l);
-    }
+    },
 
-    if (
-        Math.min.apply(Math, Results) < 0 ||
-        Math.max.apply(Math, Results) > 50 ||
-        Symbols.filter(function (x) {
-            return x == 0
-        }).length < 2 ||
-        Symbols.filter(function (x) {
-            return x == 1
-        }).length < 2 ||
-        Symbols.filter(function (x) {
-            return x == 2
-        }).length < 2) {
-
-        console.clear();
-        Generate();
-    } else {
-        DrawGrid();
-    }
-}
-
-function DrawGrid() {
-    var c = 0;
-    var html = "";
-    for (var j = 0; j < 6; j++) {
-        html += `<div class="row">`;
-        for (var i = 0; i < 6; i++) {
-            switch (Pattern[c]) {
-                case 0:
-                    html += '<div class="number" cell="' + Counter[0] + '"></div>';
-                    Counter[0]++;
-                    break;
-                case 1:
-                    html += '<div class="symbol">' + SymbolToChar(Symbols[Counter[1]]) + '</div>';
-                    Counter[1]++;
-                    break;
-                case 2:
-                    html += '<div class="gap"></div>';
-                    break;
-                case 3:
-                    html += '<div class="result" result="' + Counter[2] + '">' + Results[Counter[2]] + '</div>';
-                    Counter[2]++;
-                    break;
+    //------------------------------------PLAY FUNCTION-------------------------
+    //handle click event in the game playing
+    play : function(){
+        $('.sBox').click(function(event){   //if the block in the table been clicked
+            event.stopPropagation();
+            if($(this).hasClass('edit') == true){   //if it's a editable block
+                $('.selectActive').removeClass('selectActive');
+                $(this).addClass('selectActive');
+                if (!navigator.userAgent.match(/mobile/i)) {    //if it's not a mobile device, show select panel around where the event happens
+                    $('.select').css('top',event.pageY).css('left',event.pageX).addClass('active');
+                }else{                                          //if it's a mobile device, always show the select panel in the middle
+                    $('.select').css('top','40%').css('left','50%').addClass('active');
+                }
             }
-            c++;
-        }
-        html += `</div>`;
-    }
-    $("#board").html(html);
-}
-
-function CheckEntry(cell) {
-    for (var p = 0; p < 2; p++) {
-        var c = Checking[CheckingPlan[cell][p]];
-        c = c.map(function (x, i) {
-            return i < 3 ? Board[x] : Symbols[x];
         });
-        if (c.slice(0, 3).filter(function (x) {
-                return x == 0
-            }).length > 0) {
-            $(`.result[result=${CheckingPlan[cell][p]}]`).removeClass("correct").removeClass("wrong");
-            Matches[CheckingPlan[cell][p]] = false;
-        } else if (Action(Action(c[0], c[1], c[3]), c[2], c[4]) == Results[CheckingPlan[cell][p]]) {
-            $(`.result[result=${CheckingPlan[cell][p]}]`).addClass("correct").removeClass("wrong");
-            Matches[CheckingPlan[cell][p]] = true;
-        } else {
-            $(`.result[result=${CheckingPlan[cell][p]}]`).removeClass("correct").addClass("wrong");
-            Matches[CheckingPlan[cell][p]] = false;
-        }
-        //console.log(c);
+
+        $('.select div').click(function(){  //if the select panel been clicked
+            var thisInput = $(this).text();
+            var location = $('.selectActive').attr('id').split('_');    //analyze the id to get the location of the block selected
+            var thisRow = parseInt(location[1]);    //the x-axis of the block
+            var thisCol = parseInt(location[2]);    //the y-axis of the block
+            Sudoku.matrix[thisRow][thisCol] = parseInt(thisInput);  //update the input to the data matrix
+
+            //check the number input
+            $('.sWrong').removeClass('sWrong');
+            Sudoku.compare();   //check the input by calling the compare function
+
+            //after select a number
+            $('.selectActive').text(parseInt(thisInput));            //set the number to block
+            $('.selectActive').removeClass('selectActive');
+            $('.select').removeClass('active');
+        });
+
+        $('html').click(function(){     //the user can click any other part of the page (like background) to close the select panel
+            $('.selectActive').removeClass('selectActive');
+            $('.select').removeClass('active');
+        })
+
+    },
+
+    //--------------------------------COMPARE FUNCTION--------------------------
+    //compare numbers on the board to find potential mistake
+    compare : function(){
+        var matrix = Sudoku.matrix;
+         for(var i=0; i<9; i++){
+             for(var j=0; j<9; j++){
+                 for(var h=0; h<9; h++){
+                     if(
+                         (matrix[i][j] == matrix[i][h] && j != h)   //valid rows in Sudoku rules
+                         || (matrix[i][j] == matrix[h][j] && i != h)    //valid cols in Sudoku rules
+                       ){
+                         $('#Block_'+i+'_'+j).addClass('sWrong');   //if the number is wrong, show it with a red background
+                     };
+                 for(var k = 0; k < 3; k++) //valid groups in Sudoku rules
+                     for(var l = 0; l < 3; l++)
+                         if(
+                            (matrix[i][j] == matrix[parseInt(i / 3) * 3 + k][parseInt(j / 3) * 3 + l])
+                            && (!(i == parseInt(i / 3) * 3+k && j == parseInt(j / 3) * 3+l))
+                            ){
+                                 $('#Block_'+i+'_'+j).addClass('sWrong');
+                             };
+                 }
+             }
+         }
     }
-    //console.log(Matches.filter(function(x) {return x}));
-    console.log(Used.filter(function (x) {
-        return x == 1
-    }).length);
-    if (Matches.filter(function (x) {
-            return x
-        }).length == 6 && Used.filter(function (x) {
-            return x == 1
-        }).length == 9) {
-        $("#winner").addClass("show"); 
-    }
-}
+};
+
+$(document).ready(function(){
+    Sudoku.start();
+    Sudoku.play();
+});
