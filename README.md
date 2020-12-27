@@ -1,4 +1,4 @@
-### GAME IS CURRENTLY UNDER CONSTRUCTION ###
+# GAME IS CURRENTLY UNDER CONSTRUCTION #
 
 ![](img/avatar.png)
 
@@ -11,4 +11,4 @@ A fun math game where missing numbers are to be filled into a 9 by 9 grid of squ
 - HTML5
 
 # Link to Deployed Game:
-&&& Under Construction &&&
+https://frosty-allen-fe62a6.netlify.app/
