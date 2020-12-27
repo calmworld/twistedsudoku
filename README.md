@@ -1,7 +1,7 @@
-### UNDER CONSTRUCTION ###
+### GAME IS CURRENTLY UNDER CONSTRUCTION ###
 
 # Twisted Sudoku
-A fun math game where the user can add, multiply, and subtract numbers to match numbers on the game board.
+A fun math game where missing numbers are to be filled into a 9 by 9 grid of squares which are subdivided into 3 by 3 boxes so that every row, every column, and every box contains the numbers 1 through 9.
 
 # Technologies Used:
 - JavaScript

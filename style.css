@@ -1,4 +1,4 @@
-/*----------------------------------------game table-----------------------------------*/
+/* GAME */
 html{
     height: 100%;
     width: 100%;
@@ -23,7 +23,7 @@ html{
 }
 .sBox{
     float: left;
-    display: inline-block;
+    /* display: inline-block; */
     margin: 1px;
     height: 50px;
     line-height: 50px;
@@ -49,7 +49,8 @@ html{
     background: red;
 }
 
-/*----------------------------------------select panel-----------------------------------*/
+
+/* PANEL */
 .select{
     position: fixed;
 }
@@ -130,8 +131,7 @@ html{
     transform: translate3d(-60px, -60px, 0);
 }
 
-/*--------------------------------------responsive design-------------------------------------*/
-/*--------------------for smartphone--------------------*/
+
 @media only screen and (min-device-width : 320px) and (max-width : 568px){
     #page{
         width: 100%;
