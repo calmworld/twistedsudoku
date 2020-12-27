@@ -153,3 +153,66 @@ function Generate() {
         DrawGrid();
     }
 }
+
+function DrawGrid() {
+    var c = 0;
+    var html = "";
+    for (var j = 0; j < 6; j++) {
+        html += `<div class="row">`;
+        for (var i = 0; i < 6; i++) {
+            switch (Pattern[c]) {
+                case 0:
+                    html += '<div class="number" cell="' + Counter[0] + '"></div>';
+                    Counter[0]++;
+                    break;
+                case 1:
+                    html += '<div class="symbol">' + SymbolToChar(Symbols[Counter[1]]) + '</div>';
+                    Counter[1]++;
+                    break;
+                case 2:
+                    html += '<div class="gap"></div>';
+                    break;
+                case 3:
+                    html += '<div class="result" result="' + Counter[2] + '">' + Results[Counter[2]] + '</div>';
+                    Counter[2]++;
+                    break;
+            }
+            c++;
+        }
+        html += `</div>`;
+    }
+    $("#board").html(html);
+}
+
+function CheckEntry(cell) {
+    for (var p = 0; p < 2; p++) {
+        var c = Checking[CheckingPlan[cell][p]];
+        c = c.map(function (x, i) {
+            return i < 3 ? Board[x] : Symbols[x];
+        });
+        if (c.slice(0, 3).filter(function (x) {
+                return x == 0
+            }).length > 0) {
+            $(`.result[result=${CheckingPlan[cell][p]}]`).removeClass("correct").removeClass("wrong");
+            Matches[CheckingPlan[cell][p]] = false;
+        } else if (Action(Action(c[0], c[1], c[3]), c[2], c[4]) == Results[CheckingPlan[cell][p]]) {
+            $(`.result[result=${CheckingPlan[cell][p]}]`).addClass("correct").removeClass("wrong");
+            Matches[CheckingPlan[cell][p]] = true;
+        } else {
+            $(`.result[result=${CheckingPlan[cell][p]}]`).removeClass("correct").addClass("wrong");
+            Matches[CheckingPlan[cell][p]] = false;
+        }
+        //console.log(c);
+    }
+    //console.log(Matches.filter(function(x) {return x}));
+    console.log(Used.filter(function (x) {
+        return x == 1
+    }).length);
+    if (Matches.filter(function (x) {
+            return x
+        }).length == 6 && Used.filter(function (x) {
+            return x == 1
+        }).length == 9) {
+        $("#winner").addClass("show"); 
+    }
+}

@@ -1,12 +1,12 @@
 body {
-    --background: #1f691c;
-    --number-background: #5fbb95;
-    --number-shadow: #439673;
-    --symbol-background: #429271;
-    --symbol-shadow: #317863;
+    --background: #1c6965;
+    --number-background: #5fbbb3;
+    --number-shadow: #439684;
+    --symbol-background: #428292;
+    --symbol-shadow: #316878;
     --text: #F6F6F6;
     --text-fade: #CCCCCC;
-    --text-green: #2ecc8a;
+    --text-green: #2ecc3b;
     --text-red: #D8334A;
     --selected-background: #DDDDDD;
     --selected-shadow: #C8C8C8;
@@ -47,6 +47,44 @@ body {
     flex-direction: row;
 }
 
+div {
+    width:80px;
+    height:80px;
+    margin:10px;
+}
+.number, .symbol, .result {
+    user-select: none;
+    line-height:80px;
+    text-align:center;
+    font-size:60px;
+}
+.number, .symbol {
+    border-radius:8px;
+}
+.number {
+    background-color:var(--number-background);
+    box-shadow:0 8px 0 0 var(--number-shadow);
+    transition:all .25s -.1s;
+}
+:active {
+    transform:translateY(8px);
+    box-shadow:0 0px 0 0 #434596;
+}
+
+.symbol {
+    background-color:var(--symbol-background);
+    box-shadow:0 8px 0 0 var(--symbol-shadow);
+}
+.result {
+    position: relative;
+    font-size:40px;
+}
+.correct {
+    color:var(--text-green);
+}
+.wrong {
+    color:var(--text-red);
+}
 
 #keyboard {
     width: 500px;
@@ -90,6 +128,21 @@ body {
 }
 
 
+.used, :active {
+    transform:translateY(8px);
+    box-shadow:0 0px 0 0 var(--number-shadow);
+}
+.selected {
+    color:var(--number-background);
+    background-color:var(--text);
+    box-shadow:0 16px 0 0 var(--text-fade);
+    transform:translateY(-8px);
+}
+:active {
+    transform:translateY(8px);
+    box-shadow:0 0px 0 0 var(--text-fade);
+}
+
 
 #winner {
     position: fixed;
@@ -116,4 +169,8 @@ body {
     right: 0px;
     padding: 0 14px;
     font-size: 32px;
+}
+
+.show {
+    display: none;
 }
